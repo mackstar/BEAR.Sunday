@@ -24,7 +24,6 @@ class ConstantModule extends AbstractModule
      */
     protected function configure()
     {
-        $this->bind('')->annotatedWith('is_prod')->toInstance(false);
         $sundayDir = dirname(dirname(dirname(dirname(dirname(__DIR__)))));
         $this->bind('')->annotatedWith('sunday_dir')->toInstance($sundayDir);
     }
