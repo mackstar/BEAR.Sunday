@@ -1,9 +1,9 @@
 ---
 layout: default
 title: BEAR.Sunday | BEAR.Sunday Ubuntu 12LTS setup form ZERO
-category: Installation
+category: Getting Started
+subcategory: Installation
 ---
-#summary Installation
 
 # Installation 
 
@@ -105,21 +105,23 @@ CREATE DATABASE `blogbear` DEFAULT CHARACTER SET 'utf8';
 ```
 
 Create the posts table
+
 ```
 CREATE TABLE posts (
-id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-title VARCHAR(50),
-body TEXT,
-created DATETIME DEFAULT NULL,
-modified DATETIME DEFAULT NULL
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	title VARCHAR(50),
+	body TEXT,
+	created DATETIME DEFAULT NULL,
+	modified DATETIME DEFAULT NULL
 );
+
 /* Now add the test posts. */
 INSERT INTO posts (title,body,created)
-VALUES ('Title', 'This is the post text.', NOW());
+	VALUES ('Title', 'This is the post text.', NOW());
 INSERT INTO posts (title,body,created)
-VALUES ('Another Title', 'Here the text continues', NOW());
+	VALUES ('Another Title', 'Here the text continues', NOW());
 INSERT INTO posts (title,body,created)
-VALUES ('Yet another title', 'This looks super amazing！Not..', NOW());
+	VALUES ('Yet another title', 'This looks super amazing！Not..', NOW());
 ```
 
 ### Unit test database setting 
@@ -130,15 +132,13 @@ CREATE DATABASE `blogbeartest` DEFAULT CHARACTER SET 'utf8';
 ```
 ```
 CREATE TABLE posts (
-id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-title VARCHAR(50),
-body TEXT,
-created DATETIME DEFAULT NULL,
-modified DATETIME DEFAULT NULL
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	title VARCHAR(50),
+	body TEXT,
+	created DATETIME DEFAULT NULL,
+	modified DATETIME DEFAULT NULL
 );
 ```
-
-
 
 # Running tests 
 $ phpunit

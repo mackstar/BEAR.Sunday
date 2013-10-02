@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+    	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>BEAR.Sunday | Dependency Injection</title>
+
+        <!-- syntax highlighting CSS -->
+        <link rel="stylesheet" href="http://localhost:4000//css/bootstrap.min.css">
+        <link rel="stylesheet" href="http://localhost:4000//css/main.css">
+
+    </head>
+    <body>
+    <div id="wrap">
+      <div class="container">
+        <a href="http://localhost:4000/">
+            <img src="http://localhost:4000//img/logo.png" />
+        </a>
+
+
+        </div>
+
+
+
+<p></p>
+<div class="container">
+
+<div class="row">
+  <div class="col-md-12">
+    <ul class="nav nav-tabs">
+      <li><a href="install.html">Start Here!</a></li>
+
+      <li><a href="rest.html">REST - Hypermedia</a></li>
+      <li class="active"><a href="di.html">Dependency Injection</a></li>
+      <li><a href="aop.html">Aspect Orientated Programming</a></li>
+
+
+      <li><a href="my_first_resource.html">My First - Tutorial</a></li>
+      <li><a href="blog_install.html">Blog Tutorial</a></li>
+      <li><a href="faq.html">Other Stuff</a></li>
+    </ul>
+  </div>
+</div>
+<p></p>
+
+<div class="row">
+  <div class="col-md-3">
+
+    <div class="panel panel-default">
+	<div class="panel-heading"><strong>Getting Started</strong></div>
+	<div class="panel-body">
+
+	<ul class="nav nav-pills nav-stacked">
+		
+
+
+
+		
+   			
+<li><a href="install.html">Installation</a></li>
+<li><a href="rest.html">REST - Hypermedia</a></li>
+<li><a href="di.html">Dependency Injection</a></li>
+<li><a href="aop.html">Aspect Orientated Programming</a></li>
+
+		
+
+		
+
+		
+
+		
+
+		
+
+		
+
+		
+	</ul>
+</div>
+</div>
+
+
+  </div>
+  <div class="col-md-9">
+
+     <h1 id="toc_0">Dependency Injection framework for PHP</h1>
+
+<p><a href="https://packagist.org/packages/ray/di"><img src="https://poser.pugx.org/ray/di/v/stable.png" alt="Latest Stable Version"></a>
+<a href="http://travis-ci.org/koriym/Ray.Di"><img src="https://secure.travis-ci.org/koriym/Ray.Di.png?branch=master" alt="Build Status"></a></p>
+
+<p><strong>Ray.Di</strong> was created in order to get Guice style dependency injection in PHP projects. It tries to mirror Guice&#39;s behavior and style. <a href="(http://code.google.com/p/google-guice/wiki/Motivation?tm=6">Guice</a> is a Java dependency injection framework developed by Google.</p>
+
+<ul>
+<li>Supports some of the <a href="http://en.wikipedia.org/wiki/JSR_250">JSR-250</a> object lifecycle annotations (<code>@PostConstruct</code>, <code>@PreDestroy</code>)</li>
+<li>Provides an <a href="http://aopalliance.sourceforge.net/">AOP Alliance</a>-compliant aspect-oriented programming implementation.</li>
+<li>Extends <a href="http://auraphp.github.com/Aura.Di">Aura.Di</a>.</li>
+<li><a href="http://www.doctrine-project.org/projects/common">Doctrine.Common</a> annotations.</li>
+</ul>
+
+<p><em>Not all features of Guice have been implemented.</em></p>
+
+<h2 id="toc_1">Getting Stated</h2>
+
+<p>Here is a basic example of dependency injection using Ray.Di.</p>
+<div class="highlight"><pre><code class="php language-php" data-lang="php"><span class="x">use Ray\Di\Injector;</span>
+<span class="x">use Ray\Di\AbstractModule;</span>
+
+<span class="x">interface FinderInterface</span>
+<span class="x">{</span>
+<span class="x">}</span>
+
+<span class="x">class Finder implements FinderInterface</span>
+<span class="x">{</span>
+<span class="x">}</span>
+
+<span class="x">class Lister</span>
+<span class="x">{</span>
+<span class="x">    public $finder;</span>
+
+<span class="x">    /**</span>
+<span class="x">     * @Inject</span>
+<span class="x">     */</span>
+<span class="x">    public function setFinder(FinderInterface $finder)</span>
+<span class="x">    {</span>
+<span class="x">        $this-&gt;finder = $finder;</span>
+<span class="x">    }</span>
+<span class="x">}</span>
+
+
+<span class="x">class Module extends \Ray\Di\AbstractModule</span>
+<span class="x">{</span>
+<span class="x">    public function configure()</span>
+<span class="x">    {</span>
+<span class="x">        $this-&gt;bind(&#39;MovieApp\FinderInterface&#39;)-&gt;to(&#39;MovieApp\Finder&#39;);</span>
+<span class="x">    }</span>
+<span class="x">}</span>
+<span class="x">$injector = Injector::create([new Module]);</span>
+<span class="x">$lister = $injector-&gt;getInstance(&#39;MovieApp\Lister&#39;);</span>
+<span class="x">$works = ($lister-&gt;finder instanceof MovieApp\Finder);</span>
+<span class="x">echo(($works) ? &#39;It works!&#39; : &#39;It DOES NOT work!&#39;);</span>
+
+<span class="x">// It works!</span>
+</code></pre></div>
+<p>This is an example of <strong>Linked Bindings</strong>. Linked bindings map a type to its implementation.</p>
+
+<h3 id="toc_2">Provider Bindings</h3>
+
+<p><a href="http://code.google.com/p/rayphp/wiki/ProviderBindings">Provider bindings</a> map a type to its provider.</p>
+<div class="highlight"><pre><code class="php language-php" data-lang="php"><span class="x">$this-&gt;bind(&#39;TransactionLogInterface&#39;)-&gt;toProvider(&#39;DatabaseTransactionLogProvider&#39;);</span>
+</code></pre></div>
+<p>The provider class implements Ray&#39;s Provider interface, which is a simple, general interface for supplying values:</p>
+<div class="highlight"><pre><code class="php language-php" data-lang="php"><span class="x">use Ray\Di\ProviderInterface;</span>
+
+<span class="x">interface ProviderInterface</span>
+<span class="x">{</span>
+<span class="x">    public function get();</span>
+<span class="x">}</span>
+</code></pre></div>
+<p>Our provider implementation class has dependencies of its own, which it receives via a contructor annotated with <code>@Inject</code>.
+It implements the Provider interface to define what&#39;s returned with complete type safety:</p>
+<div class="highlight"><pre><code class="php language-php" data-lang="php"><span class="x">class DatabaseTransactionLogProvider implements Provider</span>
+<span class="x">{</span>
+<span class="x">    private ConnectionInterface connection;</span>
+
+<span class="x">    /**</span>
+<span class="x">     * @Inject</span>
+<span class="x">     */</span>
+<span class="x">    public DatabaseTransactionLogProvider(ConnectionInterface $connection)</span>
+<span class="x">    {</span>
+<span class="x">        $this-&gt;connection = $connection;</span>
+<span class="x">    }</span>
+
+<span class="x">    public TransactionLog get()</span>
+<span class="x">    {</span>
+<span class="x">        $transactionLog = new DatabaseTransactionLog;</span>
+<span class="x">        $transactionLog-&gt;setConnection($this-&gt;connection);</span>
+
+<span class="x">        return $transactionLog;</span>
+<span class="x">    }</span>
+<span class="x">}</span>
+</code></pre></div>
+<p>Finally we bind to the provider using the <code>toProvider()</code> method:</p>
+<div class="highlight"><pre><code class="php language-php" data-lang="php"><span class="x">$this-&gt;bind(&#39;TransactionLogInterface&#39;)-&gt;toProvider(&#39;DatabaseTransactionLogProvider&#39;);</span>
+</code></pre></div>
+<h3 id="toc_3">Named Bindings</h3>
+
+<p>Ray comes with a built-in binding annotation <code>@Named</code> that takes a string.</p>
+<div class="highlight"><pre><code class="php language-php" data-lang="php"><span class="x">/**</span>
+<span class="x"> *  @Inject</span>
+<span class="x"> *  @Named(&quot;processor=Checkout&quot;)</span>
+<span class="x"> */</span>
+<span class="x">public RealBillingService(CreditCardProcessor $processor)</span>
+<span class="x">{</span>
+</code></pre></div>
+<p>To bind a specific name, pass that string using the <code>annotatedWith()</code> method.</p>
+<div class="highlight"><pre><code class="php language-php" data-lang="php"><span class="x">protected function configure()</span>
+<span class="x">{</span>
+<span class="x">    $this-&gt;bind(&#39;CreditCardProcessorInterface&#39;)</span>
+<span class="x">        -&gt;annotatedWith(&#39;Checkout&#39;)</span>
+<span class="x">        -&gt;to(&#39;CheckoutCreditCardProcessor&#39;);</span>
+<span class="x">}</span>
+</code></pre></div>
+<h3 id="toc_4">Instance Bindings</h3>
+<div class="highlight"><pre><code class="php language-php" data-lang="php"><span class="x">protected function configure()</span>
+<span class="x">{</span>
+<span class="x">    $this-&gt;bind(&#39;UserIntetrface&#39;)-&gt;toInstance(new User);</span>
+<span class="x">}</span>
+</code></pre></div>
+<p>You can bind a type to an instance of that type. This is usually only useful for objects that don&#39;t have dependencies of their own, such as value objects:</p>
+<div class="highlight"><pre><code class="php language-php" data-lang="php"><span class="x">protected function configure()</span>
+<span class="x">{</span>
+<span class="x">    $this-&gt;bind()-&gt;annotatedWith(&quot;login_id&quot;)-&gt;toInstance(&#39;bear&#39;);</span>
+<span class="x">}</span>
+</code></pre></div>
+<h3 id="toc_5">Constructor Bindings</h3>
+
+<p>Occasionally it&#39;s necessary to bind a type to an arbitrary constructor. This arises when the <code>@Inject</code> annotation cannot be applied to the target constructor. eg. when it is a third party class.</p>
+<div class="highlight"><pre><code class="php language-php" data-lang="php"><span class="x">class TransactionLog</span>
+<span class="x">{</span>
+<span class="x">    public function __construct($db)</span>
+<span class="x">    {</span>
+<span class="x">     // ....</span>
+</code></pre></div><div class="highlight"><pre><code class="php language-php" data-lang="php"><span class="x">protected function configure()</span>
+<span class="x">{</span>
+<span class="x">    $this-&gt;bind(&#39;TransactionLog&#39;)-&gt;toConstructor([&#39;db&#39; =&gt; new Database]);</span>
+<span class="x">}</span>
+</code></pre></div>
+<h2 id="toc_6">Scopes</h2>
+
+<p>By default, Ray returns a new instance each time it supplies a value. This behaviour is configurable via scopes.</p>
+<div class="highlight"><pre><code class="php language-php" data-lang="php"><span class="x">protected function configure()</span>
+<span class="x">{</span>
+<span class="x">    $this-&gt;bind(&#39;TransactionLog&#39;)-&gt;to(&#39;InMemoryTransactionLog&#39;)-&gt;in(Scope::SINGLETON);</span>
+<span class="x">}</span>
+</code></pre></div>
+<h2 id="toc_7">Object life cycle</h2>
+
+<p><code>@PostConstruct</code> is used on methods that need to get executed after dependency injection has finalized to perform any extra initialization.</p>
+<div class="highlight"><pre><code class="php language-php" data-lang="php"><span class="x">/**</span>
+<span class="x"> * @PostConstruct</span>
+<span class="x"> */</span>
+<span class="x">public function onInit()</span>
+<span class="x">{</span>
+<span class="x">    //....</span>
+<span class="x">}</span>
+</code></pre></div>
+<p><code>@PreDestroy</code> is used on methods that are called after script execution finishes or exit() is called.
+This method is registered by using <strong>register_shutdown_function</strong>.</p>
+<div class="highlight"><pre><code class="php language-php" data-lang="php"><span class="x">/**</span>
+<span class="x"> * @PreDestroy</span>
+<span class="x"> */</span>
+<span class="x">public function onShutdown()</span>
+<span class="x">{</span>
+<span class="x">    //....</span>
+<span class="x">}</span>
+</code></pre></div>
+<h2 id="toc_8">Automatic Injection</h2>
+
+<p>Ray.Di automatically injects all of the following:</p>
+
+<ul>
+<li>instances passed to <code>toInstance()</code> in a bind statement</li>
+<li>provider instances passed to <code>toProvider()</code> in a bind statement</li>
+</ul>
+
+<p>The objects will be injected while the injector itself is being created. If they&#39;re needed to satisfy other startup injections, Ray.Di will inject them before they&#39;re used.</p>
+
+<h2 id="toc_9">Aspect Oriented Programing</h2>
+
+<p>To mark select methods as weekdays-only, we define an annotation .</p>
+<div class="highlight"><pre><code class="php language-php" data-lang="php"><span class="x">/**</span>
+<span class="x"> * NotOnWeekends</span>
+<span class="x"> *</span>
+<span class="x"> * @Annotation</span>
+<span class="x"> * @Target(&quot;METHOD&quot;)</span>
+<span class="x"> */</span>
+<span class="x">final class NotOnWeekends</span>
+<span class="x">{</span>
+<span class="x">}</span>
+</code></pre></div>
+<p>...and apply it to the methods that need to be intercepted:</p>
+<div class="highlight"><pre><code class="php language-php" data-lang="php"><span class="x">class BillingService</span>
+<span class="x">{</span>
+<span class="x">    /**</span>
+<span class="x">     * @NotOnWeekends</span>
+<span class="x">     */</span>
+<span class="x">    chargeOrder(PizzaOrder $order, CreditCard $creditCard)</span>
+<span class="x">    {</span>
+</code></pre></div>
+<p>Next, we define the interceptor by implementing the org.aopalliance.intercept.MethodInterceptor interface. When we need to call through to the underlying method, we do so by calling <code>$invocation-&gt;proceed()</code>:</p>
+<div class="highlight"><pre><code class="php language-php" data-lang="php"><span class="x">class WeekendBlocker implements MethodInterceptor</span>
+<span class="x">{</span>
+<span class="x">    public function invoke(MethodInvocation $invocation)</span>
+<span class="x">    {</span>
+<span class="x">        $today = getdate();</span>
+<span class="x">        if ($today[&#39;weekday&#39;][0] === &#39;S&#39;) {</span>
+<span class="x">            throw new \RuntimeException(</span>
+<span class="x">              $invocation-&gt;getMethod()-&gt;getName() . &quot; not allowed on weekends!&quot;</span>
+<span class="x">            );</span>
+<span class="x">        }</span>
+<span class="x">        return $invocation-&gt;proceed();</span>
+<span class="x">    }</span>
+<span class="x">}</span>
+</code></pre></div>
+<p>Finally, we configure everything. In this case we match any class, but only the methods with our <code>@NotOnWeekends</code> annotation:</p>
+<div class="highlight"><pre><code class="php language-php" data-lang="php"><span class="x">class WeekendModule extends AbstractModule</span>
+<span class="x">{</span>
+<span class="x">    public function configure()</span>
+<span class="x">    {</span>
+<span class="x">    protected function configure()</span>
+<span class="x">    {</span>
+<span class="x">        $this-&gt;bindInterceptor(</span>
+<span class="x">            $this-&gt;matcher-&gt;any(),</span>
+<span class="x">            $this-&gt;matcher-&gt;annotatedWith(&#39;NotOnWeekends&#39;),</span>
+<span class="x">            [new WeekendBlocker]</span>
+<span class="x">        );</span>
+<span class="x">    }</span>
+<span class="x">}</span>
+
+<span class="x">$injector = Injector::create([new WeekendModule]);</span>
+<span class="x">$billing = $injector-&gt;getInstance(&#39;BillingService&#39;);</span>
+<span class="x">try {</span>
+<span class="x">    echo $billing-&gt;chargeOrder();</span>
+<span class="x">} catch (\RuntimeException $e) {</span>
+<span class="x">    echo $e-&gt;getMessage() . &quot;\n&quot;;</span>
+<span class="x">    exit(1);</span>
+<span class="x">}</span>
+</code></pre></div>
+<p>Putting it all together, (and waiting until Saturday), we see the method is intercepted and our order is rejected:</p>
+<div class="highlight"><pre><code class="php language-php" data-lang="php"><span class="x">RuntimeException: chargeOrder not allowed on weekends! in /apps/pizza/WeekendBlocker.php on line 14</span>
+
+<span class="x">Call Stack:</span>
+<span class="x">    0.0022     228296   1. {main}() /apps/pizza/main.php:0</span>
+<span class="x">    0.0054     317424   2. Ray\Aop\Weaver-&gt;chargeOrder() /apps/pizza/main.php:14</span>
+<span class="x">    0.0054     317608   3. Ray\Aop\Weaver-&gt;__call() /libs/Ray.Aop/src/Weaver.php:14</span>
+<span class="x">    0.0055     318384   4. Ray\Aop\ReflectiveMethodInvocation-&gt;proceed() /libs/Ray.Aop/src/Weaver.php:68</span>
+<span class="x">    0.0056     318784   5. Ray\Aop\Sample\WeekendBlocker-&gt;invoke() /libs/Ray.Aop/src/ReflectiveMethodInvocation.php:65</span>
+</code></pre></div>
+<p>You can bind interceptors in variouas ways as follows.</p>
+<div class="highlight"><pre><code class="php language-php" data-lang="php"><span class="x">class TaxModule extends AbstractModule</span>
+<span class="x">{</span>
+<span class="x">    protected function configure()</span>
+<span class="x">    {</span>
+<span class="x">        $this-&gt;bindInterceptor(</span>
+<span class="x">            $this-&gt;matcher-&gt;annotatedWith(&#39;Tax&#39;),</span>
+<span class="x">            $this-&gt;matcher-&gt;any(),</span>
+<span class="x">            [new TaxCharger]</span>
+<span class="x">        );</span>
+<span class="x">    }</span>
+<span class="x">}</span>
+</code></pre></div><div class="highlight"><pre><code class="php language-php" data-lang="php"><span class="x">class AopMatcherModule extends AbstractModule</span>
+<span class="x">{</span>
+<span class="x">    pro</span>
+<span class="x">    protected function configure()</span>
+<span class="x">    {</span>
+<span class="x">        $this-&gt;bindInterceptor(</span>
+<span class="x">            $this-&gt;matcher-&gt;any(),                 // In any class and</span>
+<span class="x">            $this-&gt;matcher-&gt;startWith(&#39;delete&#39;), // ..the method start with &quot;delete&quot;</span>
+<span class="x">            [new Logger]</span>
+<span class="x">        );</span>
+<span class="x">    }</span>
+<span class="x">}</span>
+</code></pre></div>
+<h2 id="toc_10">Installation</h2>
+
+<p>A module can install other modules to configure more bindings.</p>
+
+<ul>
+<li>Earlier bindings have priority even if the same binding is made later.</li>
+<li>The module can use an existing bindings by passing in <code>$this</code>. The bindings in that module have priority.</li>
+</ul>
+<div class="highlight"><pre><code class="php language-php" data-lang="php"><span class="x">protected function configure()</span>
+<span class="x">{</span>
+<span class="x">    $this-&gt;install(new OtherModule);</span>
+<span class="x">    $this-&gt;install(new CustomiseModule($this);</span>
+<span class="x">}</span>
+</code></pre></div>
+<h2 id="toc_11">Injection in the module</h2>
+
+<p>You can use a built-in injector in the module which uses existing bindings.</p>
+<div class="highlight"><pre><code class="php language-php" data-lang="php"><span class="x">protected function configure()</span>
+<span class="x">{</span>
+<span class="x">    $this-&gt;bind(&#39;DbInterface&#39;)-&gt;to(&#39;Db&#39;);</span>
+<span class="x">    $dbLogger = $this-&gt;requestInjection(&#39;DbLogger&#39;);</span>
+<span class="x">}</span>
+</code></pre></div>
+<h2 id="toc_12">Best practice</h2>
+
+<p>Your code should deal directly with the Injector as little as possible. Instead, you want to bootstrap your application by injecting one root object.
+The class of this object should use injection to obtain references to other objects on which it depends. The classes of those objects should do the same.</p>
+
+<h2 id="toc_13">Caching dependency-injected objects</h2>
+
+<p>Storing dependency-injected objects in a cache container has huge performance boosts.
+<strong>CacheInjector</strong> also handles <em>object life cycle</em> as well as auto loading of generated aspect weaved objects.</p>
+<div class="highlight"><pre><code class="php language-php" data-lang="php"><span class="x">$injector = function()  {</span>
+<span class="x">    return Injector::create([new AppModule]);</span>
+<span class="x">};</span>
+<span class="x">$initialization = function() {</span>
+<span class="x">    // initialize per system startup (not per each request)</span>
+<span class="x">};</span>
+<span class="x">$injector = new CacheInjector($injector, $initialization, &#39;cache-namespace&#39;, new ApcCache);</span>
+<span class="x">$app = $injector-&gt;getInsntance(&#39;ApplicationInterface&#39;);</span>
+<span class="x">$app-&gt;run();</span>
+</code></pre></div>
+<h2 id="toc_14">Requirements</h2>
+
+<ul>
+<li>PHP 5.4+</li>
+</ul>
+
+<h2 id="toc_15">Testing Ray.Di Stand-Alone</h2>
+
+<p>Here&#39;s how to install Ray.Di from source and run the unit tests and samples.</p>
+<div class="highlight"><pre><code class="bash language-bash" data-lang="bash"><span class="nv">$ </span>git clone git://github.com/koriym/Ray.Di.git
+<span class="nv">$ </span><span class="nb">cd </span>Ray.Di
+<span class="nv">$ </span>composer install
+<span class="nv">$ </span>phpunit
+<span class="nv">$ </span>php doc/sample/00-newsletter.php
+<span class="nv">$ </span>php doc/sample/01-db/main.php
+<span class="nv">$ </span><span class="nb">cd </span>doc/zf2-di-tests-clone/
+<span class="nv">$ </span>php runall.php
+</code></pre></div>
+  </div>
+</div>
+
+</div>
+ 
+
+			</div>
+    	</div>
+    	<div id="footer">
+      		<div class="container">
+        		<p class="text-muted credit">
+
+        			Checkout BEAR.Sunday on <a href="https://github.com/koriym/BEAR.Sunday">Github</a>.
+
+        		</p>
+      		</div>
+    	</div>
+      <script type="text/javascript" src="http://localhost:4000//js/jquery.js"></script>
+      <script type="text/javascript">
+        $('table').addClass('table');
+      </script>
+    </body>
+</html>
