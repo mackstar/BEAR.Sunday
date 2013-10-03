@@ -1,15 +1,9 @@
 ---
 layout: default
 title: BEAR.Sunday | BEAR.Sunday Ubuntu 12LTS setup form ZERO
-<<<<<<< HEAD
 category: Getting Started
 subcategory: Installation
 ---
-=======
-category: Installation
----
-#summary Installation
->>>>>>> 8d301c87b5b7b1ba5d3b60a1b89648ffb672e331
 
 # Installation 
 
@@ -111,7 +105,6 @@ CREATE DATABASE `blogbear` DEFAULT CHARACTER SET 'utf8';
 ```
 
 Create the posts table
-<<<<<<< HEAD
 
 ```
 CREATE TABLE posts (
@@ -129,23 +122,6 @@ INSERT INTO posts (title,body,created)
 	VALUES ('Another Title', 'Here the text continues', NOW());
 INSERT INTO posts (title,body,created)
 	VALUES ('Yet another title', 'This looks super amazing！Not..', NOW());
-=======
-```
-CREATE TABLE posts (
-id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-title VARCHAR(50),
-body TEXT,
-created DATETIME DEFAULT NULL,
-modified DATETIME DEFAULT NULL
-);
-/* Now add the test posts. */
-INSERT INTO posts (title,body,created)
-VALUES ('Title', 'This is the post text.', NOW());
-INSERT INTO posts (title,body,created)
-VALUES ('Another Title', 'Here the text continues', NOW());
-INSERT INTO posts (title,body,created)
-VALUES ('Yet another title', 'This looks super amazing！Not..', NOW());
->>>>>>> 8d301c87b5b7b1ba5d3b60a1b89648ffb672e331
 ```
 
 ### Unit test database setting 
@@ -154,9 +130,9 @@ Content will be populated in setup and torn down automatically so there is no ne
 ```
 CREATE DATABASE `blogbeartest` DEFAULT CHARACTER SET 'utf8';
 ```
+
 ```
 CREATE TABLE posts (
-<<<<<<< HEAD
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 	title VARCHAR(50),
 	body TEXT,
@@ -165,18 +141,6 @@ CREATE TABLE posts (
 );
 ```
 
-=======
-id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-title VARCHAR(50),
-body TEXT,
-created DATETIME DEFAULT NULL,
-modified DATETIME DEFAULT NULL
-);
-```
-
-
-
->>>>>>> 8d301c87b5b7b1ba5d3b60a1b89648ffb672e331
 # Running tests 
 $ phpunit
 

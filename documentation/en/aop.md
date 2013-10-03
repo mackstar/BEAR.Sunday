@@ -1,6 +1,5 @@
 ---
 layout: default
-<<<<<<< HEAD
 title: BEAR.Sunday | Aspect Orientated Programming 
 category: Getting Started
 subcategory: AOP
@@ -265,4 +264,3 @@ The `MethodInvocation` main methods are as below.
 
 ## Ray.Aop 
 Please see the [Ray.Aop](http://code.google.com/p/rayphp/wiki/AOP) manual for more info on the framework BEAR.Sunday uses.
->>>>>>> 8d301c87b5b7b1ba5d3b60a1b89648ffb672e331
